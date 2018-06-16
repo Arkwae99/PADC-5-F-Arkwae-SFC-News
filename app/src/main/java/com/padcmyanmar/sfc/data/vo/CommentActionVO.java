@@ -1,6 +1,5 @@
 package com.padcmyanmar.sfc.data.vo;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
@@ -9,21 +8,27 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Created by aung on 12/3/17.
  */
-@Entity(tableName = "CommentAction",
-        foreignKeys = @ForeignKey(entity = ActedUserVO.class,
-                                    parentColumns = "actedUserId",
-                                    childColumns = "userId"))
+@Entity(tableName = "CommentAction", foreignKeys = {
+        @ForeignKey(
+                entity = NewsVO.class,
+                parentColumns = "newsId",
+                childColumns = "newsId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        @ForeignKey(
+                entity = ActedUserVO.class,
+                parentColumns = "userId",
+                childColumns = "actedUserId",
+                onDelete = ForeignKey.CASCADE
+        )})
 public class CommentActionVO {
 
-    @NotNull
     @PrimaryKey
-    @ColumnInfo(name = "commentActionId")
     @SerializedName("comment-id")
+    @NonNull
     private String commentId;
 
     @SerializedName("comment")
@@ -32,12 +37,13 @@ public class CommentActionVO {
     @SerializedName("comment-date")
     private String commentDate;
 
-    @ColumnInfo(name = "userId")
-    private String userId;
-
     @Ignore
     @SerializedName("acted-user")
     private ActedUserVO actedUser;
+
+    public String newsId;
+
+    private String actedUserId;
 
     public String getCommentId() {
         return commentId;
@@ -55,11 +61,11 @@ public class CommentActionVO {
         return actedUser;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setActedUser(ActedUserVO actedUser) {
+        this.actedUser = actedUser;
     }
 
-    public void setCommentId(@NonNull String commentId) {
+    public void setCommentId(String commentId) {
         this.commentId = commentId;
     }
 
@@ -71,11 +77,19 @@ public class CommentActionVO {
         this.commentDate = commentDate;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setActedUserId(String actedUserId) {
+        this.actedUserId = actedUserId;
     }
 
-    public void setActedUser(ActedUserVO actedUser) {
-        this.actedUser = actedUser;
+    public void setNewsId(String newsId) {
+        this.newsId = newsId;
+    }
+
+    public String getNewsId() {
+        return newsId;
+    }
+
+    public String getActedUserId() {
+        return actedUserId;
     }
 }

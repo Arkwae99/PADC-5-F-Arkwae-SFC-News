@@ -6,17 +6,15 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Created by aung on 12/3/17.
  */
 @Entity(tableName = "Publication")
 public class PublicationVO {
 
-    @NotNull
     @PrimaryKey
     @SerializedName("publication-id")
+    @NonNull
     private String publicationId;
 
     @SerializedName("title")
@@ -37,7 +35,7 @@ public class PublicationVO {
         return logo;
     }
 
-    public void setPublicationId(@NonNull String publicationId) {
+    public void setPublicationId(String publicationId) {
         this.publicationId = publicationId;
     }
 

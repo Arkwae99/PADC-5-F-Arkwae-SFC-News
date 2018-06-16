@@ -11,16 +11,22 @@ import com.padcmyanmar.sfc.data.vo.NewsVO;
 import java.util.List;
 
 @Dao
-public interface NewsDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long insertNews(NewsVO news);
+public abstract class NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long[] insertNews(NewsVO... news);
+    public abstract long insertNews(NewsVO news);
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    public abstract long[] insertNewsList(NewsVO... newsList);
 
     @Query("SELECT * FROM news")
-    LiveData<List<NewsVO>> getNews();
+    public abstract LiveData<List<NewsVO>> getAllNews();
 
     @Query("DELETE FROM news")
-    void deleteAll();
+    public abstract void deleteAll();
+
+    public void insertNewsWithPubId(String publicationId, NewsVO newsVO) {
+        newsVO.setPublicationId(publicationId);
+        insertNews(newsVO);
+    }
 }

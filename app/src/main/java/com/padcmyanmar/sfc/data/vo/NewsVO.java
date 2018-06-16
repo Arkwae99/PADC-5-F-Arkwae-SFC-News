@@ -1,14 +1,12 @@
 package com.padcmyanmar.sfc.data.vo;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +14,17 @@ import java.util.List;
 /**
  * Created by aung on 12/2/17.
  */
-@Entity(tableName = "News",
-        foreignKeys = @ForeignKey(entity = PublicationVO.class,
-                                    parentColumns = "publicationId",
-                                    childColumns = "publication_id"))
+@Entity(tableName = "News", foreignKeys = {
+        @ForeignKey(
+                entity = PublicationVO.class,
+                parentColumns = "publicationId",
+                childColumns = "publicationId",
+                onDelete = ForeignKey.CASCADE
+        )})
 public class NewsVO {
 
-    @NotNull
     @PrimaryKey
+    @NonNull
     @SerializedName("news-id")
     private String newsId;
 
@@ -32,9 +33,6 @@ public class NewsVO {
 
     @SerializedName("details")
     private String details;
-
-    @ColumnInfo(name = "publication_id")
-    private String publicationId;
 
     @Ignore
     @SerializedName("images")
@@ -46,6 +44,8 @@ public class NewsVO {
     @Ignore
     @SerializedName("publication")
     private PublicationVO publication;
+
+    private String publicationId;
 
     @Ignore
     @SerializedName("favorites")
@@ -98,28 +98,8 @@ public class NewsVO {
         return sentToActions;
     }
 
-    public String getPublicationId() {
-        return publicationId;
-    }
-
-    public void setNewsId(String newsId) {
-        this.newsId = newsId;
-    }
-
-    public void setBrief(String brief) {
-        this.brief = brief;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
     public void setImages(List<String> images) {
         this.images = images;
-    }
-
-    public void setPostedDate(String postedDate) {
-        this.postedDate = postedDate;
     }
 
     public void setPublication(PublicationVO publication) {
@@ -136,6 +116,26 @@ public class NewsVO {
 
     public void setSentToActions(List<SentToVO> sentToActions) {
         this.sentToActions = sentToActions;
+    }
+
+    public void setNewsId(String newsId) {
+        this.newsId = newsId;
+    }
+
+    public void setBrief(String brief) {
+        this.brief = brief;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public void setPostedDate(String postedDate) {
+        this.postedDate = postedDate;
+    }
+
+    public String getPublicationId() {
+        return publicationId;
     }
 
     public void setPublicationId(String publicationId) {

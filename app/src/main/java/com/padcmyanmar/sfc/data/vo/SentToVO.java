@@ -1,45 +1,44 @@
 package com.padcmyanmar.sfc.data.vo;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by aung on 12/3/17.
  */
-@Entity(tableName = "SentToAction",
-        foreignKeys = {@ForeignKey(entity = NewsVO.class,
-                                    parentColumns = "newsId",
-                                    childColumns = "news_id"),
-                        @ForeignKey(entity = ActedUserVO.class,
-                                    parentColumns = "actedUserId",
-                                    childColumns = "senderUserId"),
-                        @ForeignKey(entity = ActedUserVO.class,
-                                    parentColumns = "actedUserId",
-                                    childColumns = "receiverUserId")})
+@Entity(tableName = "SendTo", foreignKeys = {
+        @ForeignKey(
+                entity = NewsVO.class,
+                parentColumns = "newsId",
+                childColumns = "newsId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        @ForeignKey(
+                entity = ActedUserVO.class,
+                parentColumns = "userId",
+                childColumns = "senderUserId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        @ForeignKey(
+                entity = ActedUserVO.class,
+                parentColumns = "userId",
+                childColumns = "receiverUserId",
+                onDelete = ForeignKey.CASCADE
+        )})
 public class SentToVO {
 
-    @NotNull
     @PrimaryKey
-    @ColumnInfo(name = "sentToActionId")
     @SerializedName("send-to-id")
+    @NonNull
     private String sendToId;
 
     @SerializedName("sent-date")
     private String sentDate;
-
-    @ColumnInfo(name = "news_id")
-    private String newsId;
-
-    private String senderUserId;
-
-    private String receiverUserId;
 
     @Ignore
     @SerializedName("acted-user")
@@ -48,6 +47,12 @@ public class SentToVO {
     @Ignore
     @SerializedName("received-user")
     private ActedUserVO receiver;
+
+    private String newsId;
+
+    private String senderUserId;
+
+    private String receiverUserId;
 
     public String getSendToId() {
         return sendToId;
@@ -65,18 +70,6 @@ public class SentToVO {
         return receiver;
     }
 
-    public String getNewsId() {
-        return newsId;
-    }
-
-    public String getSenderUserId() {
-        return senderUserId;
-    }
-
-    public String getReceiverUserId() {
-        return receiverUserId;
-    }
-
     public void setSendToId(String sendToId) {
         this.sendToId = sendToId;
     }
@@ -85,23 +78,35 @@ public class SentToVO {
         this.sentDate = sentDate;
     }
 
-    public void setNewsId(String newsId) {
-        this.newsId = newsId;
-    }
-
-    public void setSenderUserId(String senderUserId) {
-        this.senderUserId = senderUserId;
-    }
-
-    public void setReceiverUserId(String receiverUserId) {
-        this.receiverUserId = receiverUserId;
-    }
-
     public void setSender(ActedUserVO sender) {
         this.sender = sender;
     }
 
     public void setReceiver(ActedUserVO receiver) {
         this.receiver = receiver;
+    }
+
+    public String getNewsId() {
+        return newsId;
+    }
+
+    public void setNewsId(String newsId) {
+        this.newsId = newsId;
+    }
+
+    public String getSenderUserId() {
+        return senderUserId;
+    }
+
+    public void setSenderUserId(String senderUserId) {
+        this.senderUserId = senderUserId;
+    }
+
+    public String getReceiverUserId() {
+        return receiverUserId;
+    }
+
+    public void setReceiverUserId(String receiverUserId) {
+        this.receiverUserId = receiverUserId;
     }
 }

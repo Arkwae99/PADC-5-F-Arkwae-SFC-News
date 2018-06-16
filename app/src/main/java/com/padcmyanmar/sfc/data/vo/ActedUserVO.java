@@ -1,13 +1,10 @@
 package com.padcmyanmar.sfc.data.vo;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by aung on 12/3/17.
@@ -15,20 +12,17 @@ import org.jetbrains.annotations.NotNull;
 @Entity(tableName = "ActedUser")
 public class ActedUserVO {
 
-    @NotNull
     @PrimaryKey
-    @ColumnInfo(name = "actedUserId")
+    @SerializedName("user-id")
+    @NonNull
     private String userId;
 
-    @ColumnInfo(name = "name")
     @SerializedName("user-name")
     private String userName;
 
-    @ColumnInfo(name = "profile")
     @SerializedName("profile-image")
     private String profileImage;
 
-    @NonNull
     public String getUserId() {
         return userId;
     }

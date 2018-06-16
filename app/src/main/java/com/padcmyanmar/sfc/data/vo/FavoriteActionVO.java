@@ -1,6 +1,5 @@
 package com.padcmyanmar.sfc.data.vo;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
@@ -9,37 +8,39 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Created by aung on 12/3/17.
  */
-@Entity(tableName = "FavouriteAction",
-        foreignKeys ={@ForeignKey(entity = NewsVO.class,
-                                    parentColumns = "newsId",
-                                    childColumns = "news_id"),
-                        @ForeignKey(entity = ActedUserVO.class,
-                                    parentColumns = "actedUserId",
-                                    childColumns = "user_id")})
+@Entity(tableName = "FavoriteAction", foreignKeys = {
+        @ForeignKey(
+                entity = NewsVO.class,
+                parentColumns = "newsId",
+                childColumns = "newsId",
+                onDelete = ForeignKey.CASCADE
+        ),
+        @ForeignKey(
+                entity = ActedUserVO.class,
+                parentColumns = "userId",
+                childColumns = "actedUserId",
+                onDelete = ForeignKey.CASCADE
+        )})
 public class FavoriteActionVO {
 
-    @NotNull
     @PrimaryKey
     @SerializedName("favorite-id")
+    @NonNull
     private String favoriteId;
 
     @SerializedName("favorite-date")
     private String favoriteDate;
 
-    @ColumnInfo(name = "news_id")
-    private String newsId;
-
-    @ColumnInfo(name = "user_id")
-    private String userId;
-
     @Ignore
     @SerializedName("acted-user")
     private ActedUserVO actedUser;
+
+    private String newsId;
+
+    private String actedUserId;
 
     public String getFavoriteId() {
         return favoriteId;
@@ -53,15 +54,7 @@ public class FavoriteActionVO {
         return actedUser;
     }
 
-    public String getNewsId() {
-        return newsId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setFavoriteId(@NonNull String favoriteId) {
+    public void setFavoriteId(String favoriteId) {
         this.favoriteId = favoriteId;
     }
 
@@ -69,15 +62,23 @@ public class FavoriteActionVO {
         this.favoriteDate = favoriteDate;
     }
 
+    public void setActedUser(ActedUserVO actedUser) {
+        this.actedUser = actedUser;
+    }
+
+    public String getNewsId() {
+        return newsId;
+    }
+
     public void setNewsId(String newsId) {
         this.newsId = newsId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getActedUserId() {
+        return actedUserId;
     }
 
-    public void setActedUser(ActedUserVO actedUser) {
-        this.actedUser = actedUser;
+    public void setActedUserId(String actedUserId) {
+        this.actedUserId = actedUserId;
     }
 }

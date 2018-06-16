@@ -6,9 +6,6 @@ import android.widget.TextView;
 import com.padcmyanmar.sfc.R;
 import com.padcmyanmar.sfc.data.vo.NewsVO;
 import com.padcmyanmar.sfc.delegates.NewsItemDelegate;
-import com.padcmyanmar.sfc.events.RestApiEvents;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.OnClick;
