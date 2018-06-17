@@ -24,12 +24,8 @@ import com.padcmyanmar.sfc.components.SmartScrollListener;
 import com.padcmyanmar.sfc.data.models.NewsModel;
 import com.padcmyanmar.sfc.data.vo.NewsVO;
 import com.padcmyanmar.sfc.delegates.NewsItemDelegate;
-import com.padcmyanmar.sfc.events.RestApiEvents;
-import com.padcmyanmar.sfc.events.TapNewsEvent;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.padcmyanmar.sfc.mvp.presenters.NewsListPresenter;
+import com.padcmyanmar.sfc.mvp.views.NewsListView;
 
 import java.util.Date;
 import java.util.List;
@@ -70,6 +66,7 @@ public class NewsListActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_list);
         ButterKnife.bind(this, this);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -119,8 +116,11 @@ public class NewsListActivity extends BaseActivity
 //            }
 //        });
 
+
         mNewsSubject = PublishSubject.create();
+
         mNewsSubject.subscribe(new io.reactivex.Observer<List<NewsVO>>() {
+
             @Override
             public void onSubscribe(@NonNull Disposable d) {
 
@@ -145,16 +145,43 @@ public class NewsListActivity extends BaseActivity
             }
         });
 
+    }
 
-        newsModel.initPublishSubject(mNewsSubject);
-        newsModel.startLoadingMMNews();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPresenter.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mPresenter.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
     }
 
     private void processPrimeSingle() {
         Single<String> primeSingle = Single.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                int[] numbers = new int[] { 2, 5, 10, 15, 20, 131 };
+                int[] numbers = new int[]{7, 6, 10, 15, 25, 44, 53};
                 return calculatePrime(numbers);
             }
         });
@@ -170,7 +197,7 @@ public class NewsListActivity extends BaseActivity
 
                     @Override
                     public void onSuccess(@NonNull String primeStr) {
-                        Toast.makeText(NewsListActivity.this, "Prime number : " + primeStr, Toast.LENGTH_LONG).show();
+                        Toast.makeText(NewsListActivity.this, "Prime numbers are : " + primeStr, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -196,30 +223,27 @@ public class NewsListActivity extends BaseActivity
         return primeNumbers;
     }
 
-    private boolean isPrime(int number) {
-        for (int i = 2; i < number; i++) {
-            if (number % i == 0) {
+    boolean isPrime(int n) {
+        //check if n is a multiple of 2
+        if (n % 2 == 0) return false;
+        //if not, then just check the odds
+        for (int i = 3; i * i <= n; i += 2) {
+            if (n % i == 0)
                 return false;
-            }
         }
         return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_news_list, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -227,17 +251,6 @@ public class NewsListActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
 
     @Override
     public void onTapComment() {
@@ -265,21 +278,13 @@ public class NewsListActivity extends BaseActivity
         startActivity(intent);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTapNewsEvent(TapNewsEvent event) {
-        event.getNewsId();
-        Intent intent = NewsDetailsActivity.newIntent(getApplicationContext());
-        startActivity(intent);
+    @Override
+    public void displayDataLoaded(List<NewsVO> newList) {
+        mNewsAdapter.appendNewData(newList);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNewsDataLoaded(RestApiEvents.NewsDataLoadedEvent event) {
-        mNewsAdapter.appendNewData(event.getLoadNews());
+    @Override
+    public void displayErrorMsg(String errorMsg) {
+        Snackbar.make(rvNews, errorMsg, Snackbar.LENGTH_INDEFINITE).show();
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onErrorInvokingAPI(RestApiEvents.ErrorInvokingAPIEvent event) {
-        Snackbar.make(rvNews, event.getErrorMsg(), Snackbar.LENGTH_INDEFINITE).show();
-    }
-
 }
